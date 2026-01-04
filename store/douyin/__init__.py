@@ -65,7 +65,7 @@ def _extract_note_image_list(aweme_detail: Dict) -> List[str]:
         return []
 
     for image in images:
-        image_url_list = image.get("url_list", [])  # download_url_list has watermarked images, url_list has non-watermarked images
+        image_url_list = image.get("url_list.txt", [])  # download_url_list has watermarked images, url_list.txt has non-watermarked images
         if image_url_list:
             images_res.append(image_url_list[-1])
 
@@ -89,7 +89,7 @@ def _extract_comment_image_list(comment_item: Dict) -> List[str]:
         return []
 
     for image in image_list:
-        image_url_list = image.get("origin_url", {}).get("url_list", [])
+        image_url_list = image.get("origin_url", {}).get("url_list.txt", [])
         if image_url_list and len(image_url_list) > 1:
             images_res.append(image_url_list[1])
 
@@ -109,7 +109,7 @@ def _extract_content_cover_url(aweme_detail: Dict) -> str:
     res_cover_url = ""
 
     video_item = aweme_detail.get("video", {})
-    raw_cover_url_list = (video_item.get("raw_cover", {}) or video_item.get("origin_cover", {})).get("url_list", [])
+    raw_cover_url_list = (video_item.get("raw_cover", {}) or video_item.get("origin_cover", {})).get("url_list.txt", [])
     if raw_cover_url_list and len(raw_cover_url_list) > 1:
         res_cover_url = raw_cover_url_list[1]
 
@@ -127,9 +127,9 @@ def _extract_video_download_url(aweme_detail: Dict) -> str:
         str: Video download URL
     """
     video_item = aweme_detail.get("video", {})
-    url_h264_list = video_item.get("play_addr_h264", {}).get("url_list", [])
-    url_256_list = video_item.get("play_addr_256", {}).get("url_list", [])
-    url_list = video_item.get("play_addr", {}).get("url_list", [])
+    url_h264_list = video_item.get("play_addr_h264", {}).get("url_list.txt", [])
+    url_256_list = video_item.get("play_addr_256", {}).get("url_list.txt", [])
+    url_list = video_item.get("play_addr", {}).get("url_list.txt", [])
     actual_url_list = url_h264_list or url_256_list or url_list
     if not actual_url_list or len(actual_url_list) < 2:
         return ""
@@ -168,7 +168,7 @@ async def update_douyin_aweme(aweme_item: Dict):
         "user_unique_id": user_info.get("unique_id"),
         "user_signature": user_info.get("signature"),
         "nickname": user_info.get("nickname"),
-        "avatar": user_info.get("avatar_thumb", {}).get("url_list", [""])[0],
+        "avatar": user_info.get("avatar_thumb", {}).get("url_list.txt", [""])[0],
         "liked_count": str(interact_info.get("digg_count")),
         "collected_count": str(interact_info.get("collect_count")),
         "comment_count": str(interact_info.get("comment_count")),
@@ -214,7 +214,7 @@ async def update_dy_aweme_comment(aweme_id: str, comment_item: Dict):
         "user_unique_id": user_info.get("unique_id"),
         "user_signature": user_info.get("signature"),
         "nickname": user_info.get("nickname"),
-        "avatar": avatar_info.get("url_list", [""])[0],
+        "avatar": avatar_info.get("url_list.txt", [""])[0],
         "sub_comment_count": str(comment_item.get("reply_comment_total", 0)),
         "like_count": (comment_item.get("digg_count") if comment_item.get("digg_count") else 0),
         "last_modify_ts": utils.get_current_timestamp(),

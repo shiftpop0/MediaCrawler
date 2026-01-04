@@ -25,13 +25,16 @@ SORT_TYPE = "popularity_descending"
 
 # 指定笔记URL列表, 必须要携带xsec_token参数
 XHS_SPECIFIED_NOTE_URL_LIST = [
-    "https://www.xiaohongshu.com/explore/64b95d01000000000c034587?xsec_token=AB0EFqJvINCkj6xOCKCQgfNNh8GdnBC_6XecG4QOddo3Q=&xsec_source=pc_cfeed"
     # ........................
 ]
+for line in open("config/url_list.txt", "r", encoding="utf-8"):
+    line = line.strip()
+    if line and not line.startswith("#"):
+        XHS_SPECIFIED_NOTE_URL_LIST.append(line)
 
 # 指定创作者URL列表，需要携带xsec_token和xsec_source参数
 
 XHS_CREATOR_ID_LIST = [
-    "https://www.xiaohongshu.com/user/profile/5f58bd990000000001003753?xsec_token=ABYVg1evluJZZzpMX-VWzchxQ1qSNVW3r-jOEnKqMcgZw=&xsec_source=pc_search"
+    # "https://www.xiaohongshu.com/user/profile/5f58bd990000000001003753?xsec_token=ABYVg1evluJZZzpMX-VWzchxQ1qSNVW3r-jOEnKqMcgZw=&xsec_source=pc_search"
     # ........................
 ]

@@ -107,7 +107,11 @@ async def main() -> None:
         return
 
     crawler = CrawlerFactory.create_crawler(platform=config.PLATFORM)
-    await crawler.start()
+
+    try:
+        await crawler.start()
+    except Exception as e:
+        print(f"[Main] Error starting crawler: {e}")
 
     _flush_excel_if_needed()
 
