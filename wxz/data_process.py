@@ -1,9 +1,10 @@
 import sqlite3
 import datetime
 from typing import List, Dict, Any, Optional
+import os
 
 # --- 配置区 ---
-DB_PATH = '../database/sqlite_tables.db'
+
 
 def format_timestamp(ms_timestamp):
     # 将毫秒时间戳转为秒
@@ -11,14 +12,14 @@ def format_timestamp(ms_timestamp):
     dt = datetime.datetime.fromtimestamp(ts)
     return dt.strftime("%Y年%m月%d日 %H:%M:%S")
 
-def process_notes_and_prepare_data(db_path: str) -> List[Dict[str, str]]:
+def process_notes_and_prepare_data() -> List[Dict[str, str]]:
+    DB_PATH = os.path.dirname(os.path.abspath(__file__))+'\\..\\database\\sqlite_tables.db'
     """
     处理笔记和评论数据，并按照指定格式生成用于AI分析的字符串。
     Returns:
         一个列表，每个元素是一个字典，包含格式化后的笔记和评论字符串。
     """
-    # print(f"正在连接数据库: {db_path}")
-    conn = sqlite3.connect(db_path)
+    conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row  # 让查询结果可以通过列名访问
     cursor = conn.cursor()
 
@@ -62,8 +63,9 @@ def process_notes_and_prepare_data(db_path: str) -> List[Dict[str, str]]:
         comment_parts = []
         for i, comment in enumerate(comments, 1):
             comment_str = (
-                f"评论{i}：点赞数{comment['like_count']}，"
-                f"评论时间{format_timestamp(comment['create_time'])}，"
+                f"评论{i}："
+                # f"点赞数{comment['like_count']}，"
+                # f"评论时间{format_timestamp(comment['create_time'])}，"
                 f"{comment['content']}"
             )
             comment_parts.append(comment_str)
@@ -73,17 +75,17 @@ def process_notes_and_prepare_data(db_path: str) -> List[Dict[str, str]]:
 
         # 5. 格式化笔记字符串
         note_string = (
-            f"笔记标题{note['title']}，"
-            f"点赞数{note['liked_count']}，"
-            f"收藏数{note['collected_count']}，"
-            f"笔记发布时间{format_timestamp(note['time'])}，"
-            f"笔记修改时间{format_timestamp(note['last_update_time'])}，"
-            f"{note['desc']}"
+            f"笔记标题：{note['title']}\n"
+            # f"点赞数{note['liked_count']}，"
+            # f"收藏数{note['collected_count']}，"
+            # f"笔记发布时间{format_timestamp(note['time'])}，"
+            # f"笔记修改时间{format_timestamp(note['last_update_time'])}，"
+            f"笔记内容：{note['desc']}"
         )
 
         # 6. 存入结果列表
         prepared_data.append({
-            "评论:": final_comment_string,
+            "评论": final_comment_string,
             "笔记": note_string,
             "note_id": note_id
         })
@@ -97,7 +99,7 @@ def main():
     主函数，执行整个流程
     """
     # 步骤1：处理数据并生成格式化字符串
-    all_formatted_data = process_notes_and_prepare_data(DB_PATH)
+    all_formatted_data = process_notes_and_prepare_data()
 
     if not all_formatted_data:
         print("未能处理任何数据，程序退出。")
