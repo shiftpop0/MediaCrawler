@@ -24,7 +24,7 @@ def process_notes_and_prepare_data() -> List[Dict[str, str]]:
     cursor = conn.cursor()
 
     # 1. 计算半年前的日期
-    six_months_ago = datetime.datetime.now() - datetime.timedelta(days=180)
+    six_months_ago = datetime.datetime.now() - datetime.timedelta(days=400)
     six_months_ago_ms = int(six_months_ago.timestamp() * 1000)
 
     # 2. 获取所有笔记

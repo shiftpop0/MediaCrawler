@@ -3,7 +3,8 @@ import data_process
 import sqlite3
 import os
 
-def chat():
+# 初步过滤 判断笔记和评论是否与主题相关
+def chat1():
     DB_PATH = os.path.dirname(os.path.abspath(__file__))+'\\..\\database\\sqlite_tables.db'
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
@@ -18,7 +19,6 @@ def chat():
         row = cursor.fetchone()
         if row is not None and row[0] is not None:
             continue  # 已存在则跳过
-        
         user_question = "#任务\n 判断以下提供的“笔记”和“评论”内容，是否与主题“警察可以免费进入的旅游景点”相关。请直接回复是与否，不要解释原因或添加任何额外文字。\n\n" \
                         +"#内容如下\n" \
                         +"笔记：\n" + note_data['笔记'] + "\n"\
@@ -48,5 +48,9 @@ def chat():
         ''', (note_data["note_id"], is_related))
         conn.commit()
 
+# 深度过滤，对景点免费概率内容打分
+def chat2():
+    pass
+
 if __name__ == '__main__':
-    chat()
+    chat1()
